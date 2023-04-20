@@ -1,0 +1,50 @@
+apiVersion: v1
+data:
+  haproxy.cfg: |
+    global
+      log /dev/log local0
+      log /dev/log local1 notice
+      chroot /usr/local/etc/haproxy
+      user haproxy
+      group haproxy
+      daemon
+
+    defaults
+      log global
+      mode tcp
+      option tcplog
+      option dontlognull
+      timeout connect 5000
+      timeout client 50000
+      timeout server 50000
+
+    frontend diameter_frontend
+      bind *:3868
+      default_backend diameter_backend
+
+    backend diameter_backend
+      mode tcp
+      balance source
+      stick-table type ip size 1m expire 30s
+      stick on src
+      option tcp-check
+      server diam-gateway-0 diameter-haproxy-service.brc-ns-cnpcrf-cnpcrf.svc.cluster.local:3868 check
+      server diam-gateway-1 diameter-haproxy-service.brc-ns-cnpcrf-cnpcrf.svc.cluster.local:3868 check
+      server diam-gateway-2 diameter-haproxy-service.brc-ns-cnpcrf-cnpcrf.svc.cluster.local:3868 check
+      server diam-gateway-3 diameter-haproxy-service.brc-ns-cnpcrf-cnpcrf.svc.cluster.local:3868 check
+      server diam-gateway-4 diameter-haproxy-service.brc-ns-cnpcrf-cnpcrf.svc.cluster.local:3868 check
+      server diam-gateway-5 diameter-haproxy-service.brc-ns-cnpcrf-cnpcrf.svc.cluster.local:3868 check
+      server diam-gateway-6 diameter-haproxy-service.brc-ns-cnpcrf-cnpcrf.svc.cluster.local:3868 check
+
+    listen stats
+      bind *:8404
+      mode http
+      stats enable
+      stats hide-version
+      stats realm Haproxy\ Statistics
+      stats uri /stats
+      stats auth admin:password
+kind: ConfigMap
+metadata:
+  name: haproxy-config
+  namespace: brc-ns-cnpcrf-cnpcrf

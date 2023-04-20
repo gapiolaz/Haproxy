@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: diameter-gateway-service
+  namespace: brc-ns-cnpcrf-cnpcrf
+spec:
+  allocateLoadBalancerNodePorts: true
+  clusterIP: 10.233.32.62
+  clusterIPs:
+  - 10.233.32.62
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: diameter
+    nodePort: 26991
+    port: 3868
+    protocol: TCP
+    targetPort: 3868
+  - name: stats
+    nodePort: 28601
+    port: 8404
+    protocol: TCP
+    targetPort: 8404
+  selector:
+    app: diameter-gateway-haproxy
+  sessionAffinity: None
+  type: LoadBalancer
