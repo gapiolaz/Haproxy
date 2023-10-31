@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "6"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"telegraf-deployment","namespace":"grafana-operaciones"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"telegraf"}},"template":{"metadata":{"labels":{"app":"telegraf"}},"spec":{"containers":[{"image":"ubuntu/telegraf:edge","name":"telegraf","ports":[{"containerPort":9273,"name":"telegraf","protocol":"TCP"}],"volumeMounts":[{"mountPath":"/etc/telegraf/telegraf.conf","name":"telegraf-config-volume","subPath":"telegraf.conf"},{"mountPath":"/hostfs/proc","name":"hostfs-proc","readOnly":true},{"mountPath":"/hostfs/sys","name":"hostfs-sys","readOnly":true}]}],"volumes":[{"configMap":{"items":[{"key":"main-config","path":"telegraf.conf"}],"name":"telegraf-config"},"name":"telegraf-config-volume"},{"hostPath":{"path":"/proc","type":"Directory"},"name":"hostfs-proc"},{"hostPath":{"path":"/sys","type":"Directory"},"name":"hostfs-sys"}]}}}}
+  creationTimestamp: "2023-05-09T13:15:07Z"
+  generation: 8
+  name: telegraf-deployment
+  namespace: grafana-operaciones
+  resourceVersion: "1803112994"
+  uid: 7ee050dc-d489-4878-b984-a0b285c11695
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: telegraf
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/restartedAt: "2023-05-10T13:01:48Z"
+      creationTimestamp: null
+      labels:
+        app: telegraf
+    spec:
+      containers:
+      - image: telegraf:latest
+        imagePullPolicy: IfNotPresent
+        name: telegraf
+        ports:
+        - containerPort: 9273
+          name: telegraf
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/telegraf/telegraf.conf
+          name: telegraf-config-volume
+          subPath: telegraf.conf
+        - mountPath: /usr/share/snmp/mibs
+          name: snmp-mibs
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: snmp-mibs
+        persistentVolumeClaim:
+          claimName: snmp-mibs
+          accessModes: [ "ReadWriteOnce" ]
+          resources:       
+           requests:          
+           storage: 5Gi
+      - configMap:
+          defaultMode: 420
+          items:
+          - key: main-config
+            path: telegraf.conf
+          name: telegraf-config
+        name: telegraf-config-volume
+status:
+  conditions:
+  - lastTransitionTime: "2023-05-09T13:29:44Z"
+    lastUpdateTime: "2023-05-10T13:09:25Z"
+    message: ReplicaSet "telegraf-deployment-556d798bfb" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2023-05-10T13:42:39Z"
+    lastUpdateTime: "2023-05-10T13:42:39Z"
+    message: Deployment does not have minimum availability.
+    reason: MinimumReplicasUnavailable
+    status: "False"
+    type: Available
+  observedGeneration: 8
+  replicas: 1
+  unavailableReplicas: 1
+  updatedReplicas: 1

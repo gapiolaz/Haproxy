@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    alpha.image.policy.openshift.io/resolve-names: '*'
+    app.openshift.io/route-disabled: "false"
+    deployment.kubernetes.io/revision: "6"
+    image.openshift.io/triggers: '[{"from":{"kind":"ImageStreamTag","name":"snmp-exporter:latest","namespace":"grafana-operaciones"},"fieldPath":"spec.template.spec.containers[?(@.name==\"snmp-exporter\")].image","pause":"false"}]'
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"snmp-exporter","app.kubernetes.io/component":"snmp-exporter","app.kubernetes.io/instance":"snmp-exporter","app.kubernetes.io/name":"snmp-exporter","app.kubernetes.io/part-of":"snmp-exporter","app.openshift.io/runtime-namespace":"grafana-operaciones"},"name":"snmp-exporter","namespace":"grafana-operaciones"},"spec":{"progressDeadlineSeconds":600,"replicas":1,"revisionHistoryLimit":10,"selector":{"matchLabels":{"app":"snmp-exporter"}},"strategy":{"rollingUpdate":{"maxSurge":"25%","maxUnavailable":"25%"},"type":"RollingUpdate"},"template":{"metadata":{"annotations":{"openshift.io/generated-by":"OpenShiftWebConsole"},"creationTimestamp":null,"labels":{"app":"snmp-exporter","deploymentconfig":"snmp-exporter"}},"spec":{"containers":[{"image":"prom/snmp-exporter","imagePullPolicy":"Always","name":"snmp-exporter","ports":[{"containerPort":9116,"protocol":"TCP"}],"resources":{},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","volumeMounts":[{"mountPath":"/etc/snmp_exporter/","name":"snmp-config"}]}],"dnsPolicy":"ClusterFirst","restartPolicy":"Always","schedulerName":"default-scheduler","securityContext":{},"terminationGracePeriodSeconds":30,"volumes":[{"configMap":{"defaultMode":420,"name":"snmp-exporter-config"},"name":"snmp-config"}]}}}}
+    openshift.io/generated-by: OpenShiftWebConsole
+  creationTimestamp: "2022-08-11T17:08:55Z"
+  generation: 6
+  labels:
+    app: snmp-exporter
+    app.kubernetes.io/component: snmp-exporter
+    app.kubernetes.io/instance: snmp-exporter
+    app.kubernetes.io/name: snmp-exporter
+    app.kubernetes.io/part-of: snmp-exporter
+    app.openshift.io/runtime-namespace: grafana-operaciones
+  name: snmp-exporter
+  namespace: grafana-operaciones
+  resourceVersion: "1798277445"
+  uid: 485c78de-6aed-4ce3-8bed-41b179f8b46e
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: snmp-exporter
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftWebConsole
+      labels:
+        app: snmp-exporter
+        deploymentconfig: snmp-exporter
+    spec:
+      containers:
+      - image: image-registry.openshift-image-registry.svc:5000/grafana-operaciones/snmp-exporter@sha256:260de0613b5edf4f2144ea5bfec9ffee8fa7430066f0f39cd3eb3ab8b60b0bf3
+        imagePullPolicy: Always
+        name: snmp-exporter
+        ports:
+        - containerPort: 9116
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/snmp_exporter/
+          name: snmp-config
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: snmp-exporter-config
+        name: snmp-config
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2022-08-11T17:08:55Z"
+    lastUpdateTime: "2022-08-11T17:58:37Z"
+    message: ReplicaSet "snmp-exporter-7779478cd6" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  - lastTransitionTime: "2023-05-08T22:45:41Z"
+    lastUpdateTime: "2023-05-08T22:45:41Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  observedGeneration: 6
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1
